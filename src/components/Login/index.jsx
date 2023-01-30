@@ -14,22 +14,22 @@ export default function Login() {
   const handleLogin = async (provider) => {
     const { additionalUserInfo, user } = await auth.signInWithPopup(provider);
 
-    //     if (additionalUserInfo?.isNewUser) {
-    //       addDocument("users", {
-    //         displayName: user.displayName,
-    //         email: user.email,
-    //         photoURL: user.photoURL,
-    //         uid: user.uid,
-    //         providerId: additionalUserInfo.providerId,
-    //         keywords: generateKeywords(user.displayName?.toLowerCase()),
-    //       });
-    //     }
+    // if (additionalUserInfo?.isNewUser) {
+    //   addDocument("users", {
+    //     displayName: user.displayName,
+    //     email: user.email,
+    //     photoURL: user.photoURL,
+    //     uid: user.uid,
+    //     providerId: additionalUserInfo.providerId,
+    //     keywords: generateKeywords(user.displayName?.toLowerCase()),
+    //   });
+    // }
   };
 
   return (
     <div>
       <Row justify="center" align="middle" style={{ height: "60vh" }}>
-        <Space direction="vertical"  style={{ width: "30%" }}>
+        <Space direction="vertical" style={{ width: "30%" }}>
           <Title style={{ textAlign: "center" }} level={2}>
             Firebase ChatApp{" "}
             <Title style={{ textAlign: "center", marginBottom: 16 }} level={4}>
