@@ -3,7 +3,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import "./App.css";
 import Login from "./components/Login";
 import AuthProvider from "./Context/AuthProvider";
-import ChatRoom from "./components/ChatRoom/ChatRoom";
+import ChatRoom from "./components/ChatRoom";
 
 function App() {
   return (
