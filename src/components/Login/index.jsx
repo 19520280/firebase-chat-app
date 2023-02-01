@@ -3,7 +3,7 @@ import { Row, Col, Button, Typography, Space } from "antd";
 import firebase, { auth } from "../../firebase/config";
 import { GoogleOutlined } from "@ant-design/icons";
 import { FacebookOutlined } from "@ant-design/icons/lib/icons";
-// import { addDocument, generateKeywords } from "../../firebase/services";
+import { addDocument, generateKeywords } from "../../firebase/services";
 
 const { Title } = Typography;
 
@@ -31,7 +31,7 @@ export default function Login() {
       <Row justify="center" align="middle" style={{ height: "60vh" }}>
         <Space direction="vertical" style={{ width: "30%" }}>
           <Title style={{ textAlign: "center" }} level={2}>
-            Firebase ChatApp{" "}
+            Firebase ChatApp
             <Title style={{ textAlign: "center", marginBottom: 16 }} level={4}>
               SE400.N12
             </Title>
