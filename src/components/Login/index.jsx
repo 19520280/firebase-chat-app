@@ -3,7 +3,7 @@ import { Row, Col, Button, Typography, Space } from "antd";
 import firebase, { auth } from "../../firebase/config";
 import { GoogleOutlined } from "@ant-design/icons";
 import { FacebookOutlined } from "@ant-design/icons/lib/icons";
-// import { addDocument, generateKeywords } from "../../firebase/services";
+import { addDocument, generateKeywords } from "../../firebase/service";
 
 const { Title } = Typography;
 
@@ -15,7 +15,7 @@ export default function Login() {
     const { additionalUserInfo, user } = await auth.signInWithPopup(provider);
 
     if (additionalUserInfo?.isNewUser) {
-      addDocument("users", {
+      addDocument('users', {
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
