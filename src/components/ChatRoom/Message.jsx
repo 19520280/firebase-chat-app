@@ -21,14 +21,14 @@ const WrapperStyled = styled.div`
     }
 `;
 
-export default function Message({ text, displayName, createAt, photoURL })
+export default function Message({ text, displayName, createdAt, photoURL })
 {
     return (
         <WrapperStyled>
             <div>
                 <Avatar size='small' src={photoURL}>A</Avatar>
                 <Typography.Text className='author'>{displayName}</Typography.Text>
-                <Typography.Text className='date'>{createAt}</Typography.Text>
+                <Typography.Text className='date'>{createdAt}</Typography.Text>
             </div>
             <div>
                 <Typography.Text className='content'>{text}</Typography.Text>

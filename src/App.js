@@ -4,6 +4,7 @@ import "./App.css";
 import Login from "./components/Login";
 import AuthProvider from "./Context/AuthProvider";
 import ChatRoom from "./components/ChatRoom";
+import InviteMemberModal from "./components/Modals/InviteMemberModal";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route element={<Login />} path="/login" />
           <Route element={<ChatRoom />} path="/" />
         </Routes>
+        <InviteMemberModal/>
       </AuthProvider>
     </BrowserRouter>
   );
