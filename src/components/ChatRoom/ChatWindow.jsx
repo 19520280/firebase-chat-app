@@ -69,11 +69,11 @@ const MessageListStyled = styled.div`
 `;
 
 export default function ChatWindow() {
-    const { selectedRoom, members, setIsInviteMemberVisible } = useContext(AppContext);
+    //const { selectedRoom, members, setIsInviteMemberVisible } = useContext(AppContext);
 
     return (
         <WrapperStyled>
-            {
+            {/* {
                 selectedRoom.id ? (
                     <>
                         <HeaderStyled>
@@ -126,7 +126,7 @@ export default function ChatWindow() {
                         closable
                     />
                 )
-            }
+            } */}
         </WrapperStyled>    
     );
 }
