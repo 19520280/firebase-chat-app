@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Tooltip, Avatar, Form, Input, Alert } from 'antd';
 import Message from './Message';
-import { addDocument } from '../../../firebase/service';
+import { addDocument } from '../../../firebase/services';
 import { AuthContext } from '../../../Context/AuthProvider';
 
 const HeaderStyled = styled.div`
