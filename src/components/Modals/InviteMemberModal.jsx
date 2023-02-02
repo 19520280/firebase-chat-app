@@ -13,7 +13,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 100, ...props }) {
             setOptions([]);
             setFetching(true);
 
-            fetchOptions(value).then(newOptions => {
+            fetchOptions(value, props.curMembers).then(newOptions => {
                 setOptions(newOptions);
                 setFetching(false);
             })
@@ -25,15 +25,16 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 100, ...props }) {
     return (
         <Select
             labelInValue
+            filterOption={false}
             onSearch={debounceFetcher}
             notFoundContent={ fetching ? <Spin size="small"/> : null }
             {...props}
         >
             {
                 options.map(opt => (
-                    <Select.Option>
-                        <Avatar size="small" src={opt.photoUrl}>
-                            {opt.photoUrl ? '' : opt.label?.charAt(0)?.toUpperCase()}
+                    <Select.Option key={opt.value} value={opt.value} title={opt.label}>
+                        <Avatar size="small" src={opt.photoURL}>
+                            {opt.photoURL ? '' : opt.label?.charAt(0)?.toUpperCase()}
                         </Avatar>
                         {`${opt.label}`}
                     </Select.Option>
@@ -43,7 +44,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 100, ...props }) {
     )
 }
 
-async function fetchUserList(search) {
+async function fetchUserList(search, curMembers) {
     return db
     .collection('users')
     .where('keywords', 'array-contains', search)
@@ -51,24 +52,29 @@ async function fetchUserList(search) {
     .limit(20)
     .get()
     .then(snapshot => {
-        return snapshot.docs.map(doc => ({
-            label: doc.data().displayname,
+        return snapshot.docs.map(doc => 
+        ({
+            label: doc.data().displayName,
             value: doc.data().uid,
-            photoUrl: doc.data().photoUrl,
+            photoURL: doc.data().photoURL,
         }))
+        .filter(opt => !curMembers.includes(opt.value));
     });
 }
 
 export default function InviteMemberModal() {
-    const { isInviteMemberVisible, setIsInviteMemberVisible } = useContext(AppContext);
-    const { 
-        user: { uid },
-    } = useContext(AppContext);
-    const [value, setValue] = useState();
+    const { isInviteMemberVisible, setIsInviteMemberVisible, selectedRoomId, selectedRoom } = useContext(AppContext);
+    const [value, setValue] = useState([]);
     const [form] = Form.useForm();
 
     const handleOk = () => {
         form.resetFields();
+        
+        const roomRef = db.collection('rooms').doc(selectedRoomId);
+
+        roomRef.update({
+            members: [...selectedRoom.members, ...value.map((item) => item.value)],
+        });
 
         setIsInviteMemberVisible(false);
     };
@@ -96,6 +102,7 @@ export default function InviteMemberModal() {
                         fetchOptions={fetchUserList}
                         onChange={newValue => setValue(newValue)}
                         style={{ width: '100%' }}
+                        curMembers={selectedRoom.members}
                     />
                 </Form>
             </Modal>

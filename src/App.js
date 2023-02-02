@@ -6,7 +6,7 @@ import AuthProvider from "./Context/AuthProvider";
 import ChatRoom from "./components/ChatRoom";
 import AppProvider from "./Context/AppProvider";
 import AddRoomModal from "./components/Modals/AddRoomModal";
-//import InviteMemberModal from "./components/Modals/InviteMemberModal";
+import InviteMemberModal from "./components/Modals/InviteMemberModal";
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
             <Route element={<ChatRoom />} path="/" />
           </Routes>
           <AddRoomModal/>
-          {/* <InviteMemberModal/> */}
+          <InviteMemberModal/>
         </AppProvider>
       </AuthProvider>
     </BrowserRouter>
