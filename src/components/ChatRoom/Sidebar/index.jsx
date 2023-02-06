@@ -5,9 +5,10 @@ import RoomList from './RoomList';
 import styled from 'styled-components';
 
 const SidebarStyled = styled.div`
-  background: #3f0e40;
-  color: white;
+  background: white;
+  color: #050505;
   height: 100vh;
+  border-right: 1px solid #F0F2F5;
 `;
 
 export default function Sidebar() {

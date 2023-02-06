@@ -15,7 +15,7 @@ export default function Login() {
     const { additionalUserInfo, user } = await auth.signInWithPopup(provider);
 
     if (additionalUserInfo?.isNewUser) {
-      addDocument('users', {
+      addDocument("users", {
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
@@ -30,14 +30,27 @@ export default function Login() {
     <div>
       <Row justify="center" align="middle" style={{ height: "60vh" }}>
         <Space direction="vertical" style={{ width: "30%" }}>
-          <Title style={{ textAlign: "center" }} level={2}>
+          <h1
+            style={{
+              textAlign: "center",
+              backgroundImage:
+                "linear-gradient(83.84deg, #0088FF -6.87%, #A033FF 26.54%, #FF5C87 58.58%)",
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+              fontWeight: 500,
+              fontSize: "60px",
+              letterSpacing: "-4px",
+              lineHeight: "85px",
+            }}
+          >
             Firebase ChatApp
-            <Title style={{ textAlign: "center", marginBottom: 16 }} level={4}>
+            {/* <Title style={{ textAlign: "center", marginBottom: 16 }} level={4}>
               SE400.N12
-            </Title>
-          </Title>
+            </Title> */}
+          </h1>
           <Button
             style={{ width: "100%" }}
+            size="large"
             icon={<GoogleOutlined />}
             onClick={() => handleLogin(googleProvider)}
           >
@@ -45,6 +58,7 @@ export default function Login() {
           </Button>
           <Button
             style={{ width: "100%" }}
+            size="large"
             icon={<FacebookOutlined />}
             onClick={() => handleLogin(fbProvider)}
           >
