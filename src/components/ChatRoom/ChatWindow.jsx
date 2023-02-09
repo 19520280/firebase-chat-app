@@ -87,6 +87,8 @@ export default function ChatWindow() {
   };
 
   const handleOnSubmit = () => {
+    if (!inputValue) return;
+
     addDocument('messages', {
       text: inputValue,
       uid,
@@ -96,6 +98,7 @@ export default function ChatWindow() {
     });
 
     form.resetFields(['message']);
+    setInputValue("");
 
     // focus to input again after submit
     if (inputRef?.current) {
@@ -116,13 +119,13 @@ export default function ChatWindow() {
 
   const messages = useFirestore('messages', condition);
 
-//   useEffect(() => {
-//     // scroll to bottom after message changed
-//     if (messageListRef?.current) {
-//       messageListRef.current.scrollTop =
-//         messageListRef.current.scrollHeight + 50;
-//     }
-//   }, [messages]);
+  useEffect(() => {
+    // scroll to bottom after message changed
+    if (messageListRef?.current) {
+      messageListRef.current.scrollTop =
+        messageListRef.current.scrollHeight + 50;
+    }
+  }, [messages]);
 
   return (
     <WrapperStyled>
