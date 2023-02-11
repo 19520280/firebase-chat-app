@@ -14,6 +14,14 @@ export function formatRelativeDate(seconds) {
 
 export function formatDate(seconds, formatType) {
   let formattedDate = "";
+  const today = new Date();
+
+  if (
+    formatType == "PPPP" &&
+    isSameDate(seconds, Math.floor(today.getTime() / 1000))
+  ) {
+    return "Today";
+  }
 
   if (seconds) {
     formattedDate = format(new Date(seconds * 1000), formatType);
@@ -24,7 +32,10 @@ export function formatDate(seconds, formatType) {
   return formattedDate;
 }
 
-export const compareDate = (sec1, sec2) => {
+export const isSameDate = (sec1, sec2) => {
+  console.log(
+    isSameDay(endOfDay(new Date(sec1 * 1000)), endOfDay(new Date(sec2 * 1000)))
+  );
   if (sec1 && sec2) {
     return isSameDay(
       endOfDay(new Date(sec1 * 1000)),

@@ -1,4 +1,4 @@
-import { UserAddOutlined } from "@ant-design/icons";
+import { SendOutlined, UserAddOutlined } from "@ant-design/icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Button, Tooltip, Avatar, Form, Input, Alert, Divider } from "antd";
@@ -7,7 +7,7 @@ import { AppContext } from "../../Context/AppProvider";
 import { addDocument } from "../../firebase/services";
 import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
-import { compareDate, formatDate } from "../../utils/formatDate";
+import { isSameDate, formatDate } from "../../utils/formatDate";
 
 const HeaderStyled = styled.div`
   display: flex;
@@ -58,12 +58,14 @@ const FormStyled = styled(Form)`
   justify-content: space-between;
   align-items: center;
   padding: 2px 2px 2px 0;
-  border: 1px solid rgb(230, 230, 230);
-  border-radius: 2px;
+  // border: 1px solid rgb(230, 230, 230);
 
   .ant-form-item {
     flex: 1;
-    margin-bottom: 0;
+    margin-right: 8px;
+    margin-bottom: 0px;
+    background-color: #e3e6eb;
+    border-radius: 16px;
   }
 `;
 
@@ -71,6 +73,14 @@ const MessageListStyled = styled.div`
   max-height: 100%;
   overflow-y: auto;
   padding: 12px 16px 12px 12px;
+`;
+
+const DividerMessage = styled(Divider)`
+  .ant-divider-inner-text {
+    color: #a7a7a7;
+    font-size: 12px;
+    font-weight: 500;
+  }
 `;
 
 export default function ChatWindow() {
@@ -164,14 +174,16 @@ export default function ChatWindow() {
             <MessageListStyled ref={messageListRef}>
               {messages.map((mes, index) => {
                 return (
-                  <div>
-                    {!compareDate(
-                      messages[index + 1]?.createdAt?.seconds,
-                      mes.createdAt?.seconds
-                    ) ? (
-                      <Divider>
-                        {formatDate(mes.createdAt?.seconds, "PPPP")}
-                      </Divider>
+                  <div key={mes.id}>
+                    {messages[index - 1] !== undefined ? (
+                      !isSameDate(
+                        messages[index - 1].createdAt?.seconds,
+                        mes.createdAt?.seconds
+                      ) ? (
+                        <DividerMessage plain>
+                          {formatDate(mes.createdAt?.seconds, "PPPP")}
+                        </DividerMessage>
+                      ) : null
                     ) : null}
                     <Message
                       key={mes.id}
@@ -196,9 +208,12 @@ export default function ChatWindow() {
                   autoComplete="off"
                 />
               </Form.Item>
-              <Button type="primary" onClick={handleOnSubmit}>
-                Gửi
-              </Button>
+              <Button
+                type="primary"
+                shape="circle"
+                onClick={handleOnSubmit}
+                icon={<SendOutlined />}
+              />
             </FormStyled>
           </ContentStyled>
         </>

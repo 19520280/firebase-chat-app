@@ -9,23 +9,19 @@ const WrapperStyled = styled.div`
   direction: row;
 
   .author {
-    font-weight: bold;
-  }
-
-  .date {
-    margin-left: 10px;
-    font-size: 11px;
     color: #a7a7a7;
+    font-size: 12px;
   }
 
   .content {
-    background-color: red;
+    background-color: #e3e6eb;
     padding: 8px;
     border-radius: 0px 8px 8px 8px;
   }
 
   .my-content {
-    background-color: blue;
+    background-color: #1890ff;
+    color: white;
     padding: 8px;
     border-radius: 8px 0px 8px 8px;
   }
@@ -42,7 +38,7 @@ export default function Message({
     return (
       <WrapperStyled style={{ justifyContent: "flex-end" }}>
         <Space direction="vertical" align="end">
-          <Typography.Text className="date">
+          <Typography.Text className="author">
             {formatDate(createdAt?.seconds, "p")}
           </Typography.Text>
           <Typography.Text className="my-content">{text}</Typography.Text>
@@ -58,9 +54,8 @@ export default function Message({
         </Avatar>
         <Space direction="vertical">
           <div>
-            <Typography.Text className="author">{displayName}</Typography.Text>
-            <Typography.Text className="date">
-              {formatDate(createdAt?.seconds, "p")}
+            <Typography.Text className="author">
+              {displayName}, {formatDate(createdAt?.seconds, "p")}
             </Typography.Text>
           </div>
           <Typography.Text className="content">{text}</Typography.Text>
