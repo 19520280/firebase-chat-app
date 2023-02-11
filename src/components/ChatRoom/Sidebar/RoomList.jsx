@@ -1,8 +1,68 @@
 import React, { useState } from "react";
-import { Collapse, Typography, Button } from "antd";
+import { Collapse, Typography, Button, Avatar, Space } from "antd";
 import styled from "styled-components";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { AppContext } from "../../../Context/AppProvider";
+import { AuthContext } from "./../../../Context/AuthProvider";
+
+export default function RoomList() {
+  const {
+    rooms,
+    setIsAddRoomVisible,
+    setSelectedRoomId,
+    selectedRoomId,
+    members,
+  } = React.useContext(AppContext);
+
+  const {
+    user: { uid },
+  } = React.useContext(AuthContext);
+
+  const handleAddRoom = () => {
+    setIsAddRoomVisible(true);
+  };
+
+  return (
+    <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
+      <Button
+        // type="outlined"
+        icon={<PlusSquareOutlined />}
+        className="add-room"
+        onClick={handleAddRoom}
+      >
+        Thêm phòng
+      </Button>
+      {rooms.map((room) => (
+        <LinkStyled
+          key={room.id}
+          onClick={() => {
+            setSelectedRoomId(room.id);
+          }}
+          style={{
+            background: selectedRoomId == room.id ? "aliceblue" : "white",
+          }}
+          icon={
+            <AvatarGroup maxCount={1}>
+              {members.map((member) => {
+                if (member.uid !== uid) {
+                  return (
+                    <Avatar src={member.photoURL}>
+                      {member.photoURL
+                        ? ""
+                        : member.displayName?.charAt(0)?.toUpperCase()}
+                    </Avatar>
+                  );
+                }
+              })}
+            </AvatarGroup>
+          }
+        >
+          {room.name}
+        </LinkStyled>
+      ))}
+    </Space>
+  );
+}
 
 const { Panel } = Collapse;
 
@@ -23,50 +83,51 @@ const PanelStyled = styled(Panel)`
 `;
 
 const LinkStyled = styled(Button)`
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  margin-bottom: 5px;
+  height: 68px;
+  padding: 10px;
+  margin-bottom: 8px;
   color: #050505;
+  font-weight: 500;
   text-align: left;
   border: none;
   box-shadow: none;
+
   :hover {
     background-color: aliceblue;
   }
 `;
 
-export default function RoomList() {
-  const { rooms, setIsAddRoomVisible, setSelectedRoomId, selectedRoomId } =
-    React.useContext(AppContext);
-  const handleAddRoom = () => {
-    setIsAddRoomVisible(true);
-  };
-  return (
-    <Collapse ghost defaultActiveKey={["1"]}>
-      <PanelStyled header="Danh sách các phòng" key="1">
-        {rooms.map((room) => (
-          <LinkStyled
-            key={room.id}
-            onClick={() => {
-              setSelectedRoomId(room.id);
-            }}
-          >
-            {room.name}
-          </LinkStyled>
-        ))}
-        <Button
-          type="text"
-          style={{
-            color:'#1677ff',
-            fontWeight:'500'
-          }}
-          icon={<PlusSquareOutlined />}
-          className="add-room"
-          onClick={handleAddRoom}
-        >
-          Thêm phòng
-        </Button>
-      </PanelStyled>
-    </Collapse>
-  );
-}
+const AvatarGroup = styled(Avatar.Group)`
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-right: 8px;
+
+  .ant-avatar {
+    width: calc(100% * (2 / 3));
+    height: calc(100% * (2 / 3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .ant-avatar-string {
+    }
+  }
+
+  > :first-child {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+  }
+
+  > :nth-child(2) {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    right: 0;
+  }
+`;
