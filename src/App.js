@@ -7,7 +7,8 @@ import ChatRoom from "./components/ChatRoom";
 import AppProvider from "./Context/AppProvider";
 import AddRoomModal from "./components/Modals/AddRoomModal";
 import InviteMemberModal from "./components/Modals/InviteMemberModal";
-
+import EditRoomModal from "./components/Modals/EditRoomModal";
+import LeaveRoomModal from "./components/Modals/LeaveRoomModel";
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +20,8 @@ function App() {
           </Routes>
           <AddRoomModal/>
           <InviteMemberModal/>
+          <EditRoomModal/>
+          <LeaveRoomModal/>
         </AppProvider>
       </AuthProvider>
     </BrowserRouter>

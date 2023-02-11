@@ -1,4 +1,4 @@
-import { SendOutlined, UserAddOutlined } from "@ant-design/icons";
+import { SendOutlined, UserAddOutlined, EditOutlined, LogoutOutlined } from "@ant-design/icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Button, Tooltip, Avatar, Form, Input, Alert, Divider } from "antd";
@@ -11,7 +11,7 @@ import { isSameDate, formatDate } from "../../utils/formatDate";
 
 
 export default function ChatWindow() {
-  const { selectedRoom, members, setIsInviteMemberVisible } =
+  const { selectedRoom, members, setIsInviteMemberVisible, setIsEditRoomVisible, setIsLeaveRoomVisible } =
     useContext(AppContext);
 
   const {
@@ -77,6 +77,20 @@ export default function ChatWindow() {
               </span>
             </div>
             <ButtonGroupStyled>
+              <Button
+                icon={<EditOutlined />}
+                type="text"
+                onClick={()=> setIsEditRoomVisible(true)}
+              >
+                Đổi tên phòng
+              </Button>
+              <Button
+                icon={<LogoutOutlined />}
+                type="text"
+                onClick={()=> setIsLeaveRoomVisible(true)}
+              >
+                Rời phòng
+              </Button>
               <Button
                 icon={<UserAddOutlined />}
                 type="text"

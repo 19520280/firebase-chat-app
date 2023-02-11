@@ -8,6 +8,16 @@ export const addDocument = (collection, data) => {
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   });
 };
+export const updateDocument = (collection, data, id) => {
+  const query = db.collection(collection);
+  query.doc(id).update({...data});
+};
+export const leaveRoom = (collection, roomID, id) => {
+  const deleteRef = db.collection(collection).doc(roomID);
+  deleteRef.update({
+    members: firebase.firestore.FieldValue.arrayRemove(id)
+  });
+};
 
 // tao keywords cho displayName, su dung cho search
 export const generateKeywords = (displayName) => {
