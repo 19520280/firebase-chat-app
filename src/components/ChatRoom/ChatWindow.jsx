@@ -9,79 +9,6 @@ import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
 import { isSameDate, formatDate } from "../../utils/formatDate";
 
-const HeaderStyled = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 56px;
-  padding: 0 16px;
-  align-items: center;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-  .header {
-    &__info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    &__title {
-      margin: 0;
-      font-weight: bold;
-    }
-
-    &__description {
-      font-size: 12px;
-    }
-  }
-`;
-
-const ButtonGroupStyled = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const WrapperStyled = styled.div`
-  height: 100vh;
-  display: block;
-  overflow-x: hidden;
-`;
-
-const ContentStyled = styled.div`
-  height: calc(100% - 56px);
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  justify-content: flex-end;
-`;
-
-const FormStyled = styled(Form)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2px 2px 2px 0;
-  // border: 1px solid rgb(230, 230, 230);
-
-  .ant-form-item {
-    flex: 1;
-    margin-right: 8px;
-    margin-bottom: 0px;
-    background-color: #e3e6eb;
-    border-radius: 16px;
-  }
-`;
-
-const MessageListStyled = styled.div`
-  max-height: 100%;
-  overflow-y: auto;
-  padding: 12px 16px 12px 12px;
-`;
-
-const DividerMessage = styled(Divider)`
-  .ant-divider-inner-text {
-    color: #a7a7a7;
-    font-size: 12px;
-    font-weight: 500;
-  }
-`;
 
 export default function ChatWindow() {
   const { selectedRoom, members, setIsInviteMemberVisible } =
@@ -229,3 +156,78 @@ export default function ChatWindow() {
     </WrapperStyled>
   );
 }
+
+
+const HeaderStyled = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 16px;
+  align-items: center;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  .header {
+    &__info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    &__title {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    &__description {
+      font-size: 12px;
+    }
+  }
+`;
+
+const ButtonGroupStyled = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const WrapperStyled = styled.div`
+  height: 100vh;
+  display: block;
+  overflow-x: hidden;
+`;
+
+const ContentStyled = styled.div`
+  height: calc(100% - 56px);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  justify-content: flex-end;
+`;
+
+const FormStyled = styled(Form)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 2px 2px 0;
+  // border: 1px solid rgb(230, 230, 230);
+
+  .ant-form-item {
+    flex: 1;
+    margin-right: 8px;
+    margin-bottom: 0px;
+    background-color: #e3e6eb;
+    border-radius: 16px;
+  }
+`;
+
+const MessageListStyled = styled.div`
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 12px 16px 12px 12px;
+`;
+
+const DividerMessage = styled(Divider)`
+  .ant-divider-inner-text {
+    color: #a7a7a7;
+    font-size: 12px;
+    font-weight: 500;
+  }
+`;
