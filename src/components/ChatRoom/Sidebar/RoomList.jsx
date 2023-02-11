@@ -38,7 +38,6 @@ const LinkStyled = styled(Button)`
 export default function RoomList() {
   const { rooms, setIsAddRoomVisible, setSelectedRoomId, selectedRoomId } =
     React.useContext(AppContext);
-  console.log(selectedRoomId);
   const handleAddRoom = () => {
     setIsAddRoomVisible(true);
   };
