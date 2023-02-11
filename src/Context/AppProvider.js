@@ -7,6 +7,7 @@ export const AppContext = React.createContext();
 export default function AppProvider({ children }) {
   const [isAddRoomVisible, setIsAddRoomVisible] = useState(false);
   const [isInviteMemberVisible, setIsInviteMemberVisible] = useState(false);
+  const [selectedContactId, setSelectedContactId] = useState('');
   const [selectedRoomId, setSelectedRoomId] = useState('');
 
   const {
@@ -28,7 +29,19 @@ export default function AppProvider({ children }) {
     [rooms, selectedRoomId]
   );
 
-  const usersCondition = React.useMemo(() => {
+  const users = useFirestore('users', undefined);
+
+  const others = React.useMemo(
+    () => users.filter((user) => user.uid !== uid) || {},
+    [users, uid]
+  );
+
+  const selectedContact = React.useMemo(
+    () => users.find((user) => user.uid === selectedContactId) || {}, 
+    [users, selectedContactId]
+  );
+
+  const memberCondition = React.useMemo(() => {
     return {
       fieldName: 'uid',
       operator: 'in',
@@ -36,7 +49,7 @@ export default function AppProvider({ children }) {
     };
   }, [selectedRoom.members]);
 
-  const members = useFirestore('users', usersCondition);
+  const members = useFirestore('users', memberCondition);
 
   const clearState = () => {
     setSelectedRoomId('');
@@ -47,11 +60,16 @@ export default function AppProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
+        users,
+        others,
         rooms,
         members,
+        selectedContact,
         selectedRoom,
         isAddRoomVisible,
         setIsAddRoomVisible,
+        selectedContactId,
+        setSelectedContactId,
         selectedRoomId,
         setSelectedRoomId,
         isInviteMemberVisible,

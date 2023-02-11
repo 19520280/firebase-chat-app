@@ -3,6 +3,7 @@ import { Collapse, Typography, Button } from "antd";
 import styled from "styled-components";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { AppContext } from "../../../Context/AppProvider";
+import { db } from '../../../firebase/config';
 
 const { Panel } = Collapse;
 
@@ -36,19 +37,36 @@ const LinkStyled = styled(Button)`
 `;
 
 export default function RoomList() {
-  const { rooms, setIsAddRoomVisible, setSelectedRoomId, selectedRoomId } =
+  const { others, rooms, setIsAddRoomVisible, selectedContactId, setSelectedContactId, setSelectedRoomId, selectedRoomId } =
     React.useContext(AppContext);
-  console.log(selectedRoomId);
   const handleAddRoom = () => {
     setIsAddRoomVisible(true);
   };
+
   return (
-    <Collapse ghost defaultActiveKey={["1"]}>
+    <Collapse ghost defaultActiveKey={["0"]}>
+      <PanelStyled header="Danh sách liên hệ" key="0">
+        {
+          others.map((user) => (
+            <LinkStyled
+              key={user.id}
+              onClick={() => {
+                setSelectedContactId(user.uid);
+                setSelectedRoomId('');
+              }}
+            >
+              {user.displayName}
+            </LinkStyled>
+          ))
+        }
+      </PanelStyled>
+
       <PanelStyled header="Danh sách các phòng" key="1">
         {rooms.map((room) => (
           <LinkStyled
             key={room.id}
             onClick={() => {
+              setSelectedContactId('');
               setSelectedRoomId(room.id);
             }}
           >

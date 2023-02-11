@@ -72,8 +72,11 @@ const MessageListStyled = styled.div`
 `;
 
 export default function ChatWindow() {
-  const { selectedRoom, members, setIsInviteMemberVisible } =
-    useContext(AppContext);
+  const { 
+    selectedContactId, selectedContact, 
+    selectedRoomId, selectedRoom, 
+    members, setIsInviteMemberVisible 
+  } = useContext(AppContext);
   const {
     user: { uid, photoURL, displayName },
   } = useContext(AuthContext);
@@ -81,6 +84,7 @@ export default function ChatWindow() {
   const [form] = Form.useForm();
   const inputRef = useRef(null);
   const messageListRef = useRef(null);
+  const isGroupConvesation = selectedRoomId && !selectedContactId;
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -89,13 +93,24 @@ export default function ChatWindow() {
   const handleOnSubmit = () => {
     if (!inputValue) return;
 
-    addDocument('messages', {
-      text: inputValue,
-      uid,
-      photoURL,
-      roomId: selectedRoom.id,
-      displayName,
-    });
+    if (isGroupConvesation) {
+      addDocument('messages', {
+        text: inputValue,
+        uid,
+        photoURL,
+        roomId: selectedRoom.id,
+        displayName,
+      });
+    }
+    else {
+      addDocument('messages', {
+        text: inputValue,
+        uid,
+        photoURL,
+        receiverId: selectedContactId,
+        displayName,
+      });
+    }
 
     form.resetFields(['message']);
     setInputValue("");
@@ -117,7 +132,28 @@ export default function ChatWindow() {
     [selectedRoom.id]
   );
 
-  const messages = useFirestore('messages', condition);
+  const condition1 = React.useMemo(
+    () => ({
+      fieldName: 'uid',
+      operator: '==',
+      compareValue: uid,
+    }),
+    [uid]
+  );
+
+  const condition2 = React.useMemo(
+    () => ({
+      fieldName: 'receiverId',
+      operator: '==',
+      compareValue: uid,
+    }),
+    [uid]
+  );
+
+  const groupMessages = useFirestore('messages', condition);
+  const contactMessages = [...useFirestore('messages', condition1).filter((message) => message.receiverId === selectedContact.uid), 
+                          ...useFirestore('messages', condition2).filter((message) => message.uid === selectedContact.uid)];
+  const messages = isGroupConvesation ? groupMessages : contactMessages;
 
   useEffect(() => {
     // scroll to bottom after message changed
@@ -129,36 +165,55 @@ export default function ChatWindow() {
 
   return (
     <WrapperStyled>
-      {selectedRoom.id ? (
+      {(!selectedRoom.id && !selectedContactId) ? 
+      (
+        <Alert
+          message='Hãy chọn phòng'
+          type='info'
+          showIcon
+          style={{ margin: 5 }}
+          closable
+        />
+      ) : (
         <>
-          <HeaderStyled>
-            <div className='header__info'>
-              <p className='header__title'>{selectedRoom.name}</p>
-              <span className='header__description'>
-                {selectedRoom.description}
-              </span>
-            </div>
-            <ButtonGroupStyled>
-              <Button
-                icon={<UserAddOutlined />}
-                type='text'
-                onClick={() => setIsInviteMemberVisible(true)}
-              >
-                Mời
-              </Button>
-              <Avatar.Group size='small' maxCount={2}>
-                {members.map((member) => (
-                  <Tooltip title={member.displayName} key={member.id}>
-                    <Avatar src={member.photoURL}>
-                      {member.photoURL
-                        ? ''
-                        : member.displayName?.charAt(0)?.toUpperCase()}
-                    </Avatar>
-                  </Tooltip>
-                ))}
-              </Avatar.Group>
-            </ButtonGroupStyled>
-          </HeaderStyled>
+        {
+          isGroupConvesation ? (
+            <HeaderStyled>
+              <div className='header__info'>
+                <p className='header__title'>{selectedRoom.name}</p>
+                <span className='header__description'>
+                  {selectedRoom.description}
+                </span>
+              </div>
+              <ButtonGroupStyled>
+                <Button
+                  icon={<UserAddOutlined />}
+                  type='text'
+                  onClick={() => setIsInviteMemberVisible(true)}
+                >
+                  Mời
+                </Button>
+                <Avatar.Group size='small' maxCount={2}>
+                  {members.map((member) => (
+                    <Tooltip title={member.displayName} key={member.id}>
+                      <Avatar src={member.photoURL}>
+                        {member.photoURL
+                          ? ''
+                          : member.displayName?.charAt(0)?.toUpperCase()}
+                      </Avatar>
+                    </Tooltip>
+                  ))}
+                </Avatar.Group>
+              </ButtonGroupStyled>
+            </HeaderStyled>
+          ) : (
+            <HeaderStyled>
+              <div className='header__info'>
+                <p className='header__title'>{selectedContact.displayName}</p>
+              </div>
+            </HeaderStyled>
+          )
+        }
           <ContentStyled>
             <MessageListStyled ref={messageListRef}>
               {messages.map((mes) => (
@@ -188,14 +243,6 @@ export default function ChatWindow() {
             </FormStyled>
           </ContentStyled>
         </>
-      ) : (
-        <Alert
-          message='Hãy chọn phòng'
-          type='info'
-          showIcon
-          style={{ margin: 5 }}
-          closable
-        />
       )}
     </WrapperStyled>
   );
