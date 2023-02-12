@@ -32,7 +32,7 @@ export default function EditRoomModal() {
     <div>
       <Modal
         title='Sửa tên phòng'
-        visible={isEditRoomVisible}
+        open={isEditRoomVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >

@@ -25,7 +25,7 @@ export default function LeaveRoomModal() {
     <div>
       <Modal
         title='Bạn có chắc chắn rời phòng ?'
-        visible={isLeaveRoomVisible}
+        open={isLeaveRoomVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >

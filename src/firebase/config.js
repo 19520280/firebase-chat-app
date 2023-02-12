@@ -2,6 +2,7 @@ import firebase from "firebase/compat/app";
 
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 
 var firebaseConfig = {
   apiKey: "AIzaSyDr-_JUpONcz8wpkN-__BjZKETclPW3xgE",
@@ -18,11 +19,13 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
-// if (window.location.hostname === "localhost") {
-//   auth.useEmulator("http://localhost:9099");
-//   db.useEmulator("localhost", "8080");
-// }
+if (window.location.hostname === "localhost") {
+  auth.useEmulator("http://localhost:9099");
+  db.useEmulator("localhost", "8080");
+  storage.useEmulator("localhost", "9199");
+}
 
-export { db, auth };
+export { db, auth, storage };
 export default firebase;

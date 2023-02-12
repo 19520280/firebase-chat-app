@@ -10,8 +10,8 @@ import { AppContext } from "../../Context/AppProvider";
 import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
 import { formatDate, isSameDate } from "../../utils/formatDate";
-import InputMessage from "./InputMessage";
-import Message from "./Message";
+import InputMessage from "./Message/InputMessage";
+import Message from "./Message/Message";
 
 // export default function ChatWindow() {
 //   const {  selectedContactId, selectedContact,
@@ -354,6 +354,7 @@ export default function ChatWindow() {
                     <Message
                       key={mes.id}
                       text={mes.text}
+                      imgURL={mes.imgURL}
                       photoURL={mes.photoURL}
                       displayName={mes.displayName}
                       createdAt={mes.createdAt}

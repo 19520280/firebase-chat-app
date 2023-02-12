@@ -92,7 +92,7 @@ export default function InviteMemberModal() {
     <div>
       <Modal
         title="Mời thêm thành viên"
-        visible={isInviteMemberVisible}
+        open={isInviteMemberVisible}
         onOk={handleOk}
         onCancel={handleCancle}
       >

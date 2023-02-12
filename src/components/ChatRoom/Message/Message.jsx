@@ -1,12 +1,11 @@
 import { Avatar, Space, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";
-import { formatDate, formatRelativeDate } from "./../../utils/formatDate";
+import { formatDate, formatRelativeDate } from "../../../utils/formatDate";
+import MessageContent from "./MessageContent";
 const WrapperStyled = styled.div`
   margin-bottom: 12px;
   width: 100%;
-  display: flex;
-  direction: row;
 
   .author {
     color: #a7a7a7;
@@ -25,10 +24,17 @@ const WrapperStyled = styled.div`
     padding: 8px;
     border-radius: 8px 0px 8px 8px;
   }
+
+  img {
+    position: relative;
+    max-width: 30%;
+    border-radius: 8px;
+  }
 `;
 
 export default function Message({
   text,
+  imgURL,
   displayName,
   createdAt,
   photoURL,
@@ -41,14 +47,18 @@ export default function Message({
           <Typography.Text className="author">
             {formatDate(createdAt?.seconds, "p")}
           </Typography.Text>
-          <Typography.Text className="my-content">{text}</Typography.Text>
+          {/* {text && (
+            <Typography.Text className="my-content">{text}</Typography.Text>
+          )}
+          <img src={imgURL} /> */}
+          <MessageContent text={text} imgURL={imgURL} isOwner/>
         </Space>
       </WrapperStyled>
     );
   }
   return (
     <WrapperStyled>
-      <Space align="start">
+      <Space align="start" direction="horizontal">
         <Avatar size="large" src={photoURL}>
           {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
         </Avatar>
@@ -58,7 +68,11 @@ export default function Message({
               {displayName}, {formatDate(createdAt?.seconds, "p")}
             </Typography.Text>
           </div>
-          <Typography.Text className="content">{text}</Typography.Text>
+          {/* {text && (
+            <Typography.Text className="content">{text}</Typography.Text>
+          )}
+          <img src={imgURL} /> */}
+          <MessageContent text={text} imgURL={imgURL} />
         </Space>
       </Space>
     </WrapperStyled>
