@@ -5,72 +5,6 @@ import { PlusSquareOutlined } from "@ant-design/icons";
 import { AppContext } from "../../../Context/AppProvider";
 import { AuthContext } from "./../../../Context/AuthProvider";
 
-export default function RoomList() {
-  const {
-    rooms,
-    setIsAddRoomVisible,
-    setSelectedRoomId,
-    selectedRoomId,
-    members,
-  } = React.useContext(AppContext);
-
-  const {
-    user: { uid },
-  } = React.useContext(AuthContext);
-
-  const handleAddRoom = () => {
-    setIsAddRoomVisible(true);
-  };
-
-  console.log(members);
-  return (
-    <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
-      <Button
-        // type="outlined"
-        icon={<PlusSquareOutlined />}
-        className="add-room"
-        onClick={handleAddRoom}
-      >
-        Thêm phòng
-      </Button>
-      {rooms.map((room) => (
-        <LinkStyled
-          key={room.id}
-          onClick={() => {
-            setSelectedRoomId(room.id);
-          }}
-          style={{
-            background: selectedRoomId == room.id ? "aliceblue" : "white",
-          }}
-          icon={
-            room?.members.length == 1 ? (
-              <Avatar siz="large" style={{ marginRight: 8 }}>
-                {room.name?.charAt(0)?.toUpperCase()}
-              </Avatar>
-            ) : (
-              <AvatarGroup maxCount={1}>
-                {members?.map((member) => {
-                  if (room.members.includes(member.uid)) {
-                    return (
-                      <Avatar src={member.photoURL}>
-                        {member.photoURL
-                          ? ""
-                          : member.displayName?.charAt(0)?.toUpperCase()}
-                      </Avatar>
-                    );
-                  }
-                })}
-              </AvatarGroup>
-            )
-          }
-        >
-          {room.name}
-        </LinkStyled>
-      ))}
-    </Space>
-  );
-}
-
 const { Panel } = Collapse;
 
 const PanelStyled = styled(Panel)`
@@ -95,7 +29,6 @@ const LinkStyled = styled(Button)`
   width: 100%;
   height: 68px;
   padding: 10px;
-  margin-bottom: 8px;
   color: #050505;
   font-weight: 500;
   text-align: left;
@@ -138,3 +71,84 @@ const AvatarGroup = styled(Avatar.Group)`
     right: 0;
   }
 `;
+
+export default function RoomList() {
+  const {
+    others,
+    rooms,
+    members,
+    setIsAddRoomVisible,
+    selectedContactId,
+    setSelectedContactId,
+    setSelectedRoomId,
+    selectedRoomId,
+  } = React.useContext(AppContext);
+  const {
+    user: { uid },
+  } = React.useContext(AuthContext);
+  const handleAddRoom = () => {
+    setIsAddRoomVisible(true);
+  };
+
+  return (
+    <Space direction="vertical" style={{ width: "100%", padding: 12, gap: 0 }}>
+      <Button
+        // type="outlined"
+        icon={<PlusSquareOutlined />}
+        className="add-room"
+        onClick={handleAddRoom}
+      >
+        Thêm phòng
+      </Button>
+      {others.map((user) => (
+        <LinkStyled
+          key={user.uid}
+          onClick={() => {
+            setSelectedContactId(user.uid);
+            setSelectedRoomId("");
+          }}
+          style={{
+            background: selectedContactId == user.uid ? "aliceblue" : "white",
+          }}
+        >
+          {user.displayName}
+        </LinkStyled>
+      ))}
+      {rooms.map((room) => (
+        <LinkStyled
+          key={room.id}
+          onClick={() => {
+            setSelectedContactId("");
+            setSelectedRoomId(room.id);
+          }}
+          style={{
+            background: selectedRoomId == room.id ? "aliceblue" : "white",
+          }}
+          icon={
+            room?.members.length == 1 ? (
+              <Avatar siz="large" style={{ marginRight: 8 }}>
+                {room.name?.charAt(0)?.toUpperCase()}
+              </Avatar>
+            ) : (
+              <AvatarGroup maxCount={1}>
+                {members?.map((member) => {
+                  if (room.members.includes(member.uid)) {
+                    return (
+                      <Avatar src={member.photoURL}>
+                        {member.photoURL
+                          ? ""
+                          : member.displayName?.charAt(0)?.toUpperCase()}
+                      </Avatar>
+                    );
+                  }
+                })}
+              </AvatarGroup>
+            )
+          }
+        >
+          {room.name}
+        </LinkStyled>
+      ))}
+    </Space>
+  );
+}

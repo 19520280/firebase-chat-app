@@ -14,171 +14,169 @@ import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
 import { isSameDate, formatDate } from "../../utils/formatDate";
 
-export default function ChatWindow() {
-  const {
-    selectedRoom,
-    membersSelectedRoom,
-    setIsInviteMemberVisible,
-    setIsEditRoomVisible,
-    setIsLeaveRoomVisible,
-  } = useContext(AppContext);
+// export default function ChatWindow() {
+//   const {  selectedContactId, selectedContact,
+//     selectedRoomId, selectedRoom,
+//     membersSelectedRoom, setIsInviteMemberVisible,
+//     setIsEditRoomVisible, setIsLeaveRoomVisible  } =
+//     useContext(AppContext);
 
-  const {
-    user: { uid, photoURL, displayName },
-  } = useContext(AuthContext);
+//   const {
+//     user: { uid, photoURL, displayName },
+//   } = useContext(AuthContext);
 
-  const [inputValue, setInputValue] = useState("");
-  const [form] = Form.useForm();
-  const inputRef = useRef(null);
-  const messageListRef = useRef(null);
+//   const [inputValue, setInputValue] = useState("");
+//   const [form] = Form.useForm();
+//   const inputRef = useRef(null);
+//   const messageListRef = useRef(null);
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
+//   const handleInputChange = (e) => {
+//     setInputValue(e.target.value);
+//   };
 
-  const handleOnSubmit = () => {
-    addDocument("messages", {
-      text: inputValue,
-      uid,
-      photoURL,
-      roomId: selectedRoom.id,
-      displayName,
-    });
+//   const handleOnSubmit = () => {
+//     addDocument("messages", {
+//       text: inputValue,
+//       uid,
+//       photoURL,
+//       roomId: selectedRoom.id,
+//       displayName,
+//     });
 
-    form.resetFields(["message"]);
+//     form.resetFields(["message"]);
 
-    // focus to input again after submit
-    if (inputRef?.current) {
-      setTimeout(() => {
-        inputRef.current.focus();
-      });
-    }
-  };
+//     // focus to input again after submit
+//     if (inputRef?.current) {
+//       setTimeout(() => {
+//         inputRef.current.focus();
+//       });
+//     }
+//   };
 
-  const condition = React.useMemo(
-    () => ({
-      fieldName: "roomId",
-      operator: "==",
-      compareValue: selectedRoom.id,
-    }),
-    [selectedRoom.id]
-  );
+//   const condition = React.useMemo(
+//     () => ({
+//       fieldName: "roomId",
+//       operator: "==",
+//       compareValue: selectedRoom.id,
+//     }),
+//     [selectedRoom.id]
+//   );
 
-  const messages = useFirestore("messages", condition);
+//   const messages = useFirestore("messages", condition);
 
-  useEffect(() => {
-    // scroll to bottom after message changed
-    if (messageListRef?.current) {
-      messageListRef.current.scrollTop =
-        messageListRef.current.scrollHeight + 50;
-    }
-  }, [messages]);
+//   useEffect(() => {
+//     // scroll to bottom after message changed
+//     if (messageListRef?.current) {
+//       messageListRef.current.scrollTop =
+//         messageListRef.current.scrollHeight + 50;
+//     }
+//   }, [messages]);
 
-  return (
-    <WrapperStyled>
-      {selectedRoom.id ? (
-        <>
-          <HeaderStyled>
-            <div className="header__info">
-              <p className="header__title">{selectedRoom.name}</p>
-              <span className="header__description">
-                {selectedRoom.description}
-              </span>
-            </div>
-            <ButtonGroupStyled>
-              <Button
-                icon={<EditOutlined />}
-                type="text"
-                onClick={() => setIsEditRoomVisible(true)}
-              >
-                Đổi tên phòng
-              </Button>
-              <Button
-                icon={<LogoutOutlined />}
-                type="text"
-                onClick={() => setIsLeaveRoomVisible(true)}
-              >
-                Rời phòng
-              </Button>
-              <Button
-                icon={<UserAddOutlined />}
-                type="text"
-                onClick={() => setIsInviteMemberVisible(true)}
-              >
-                Mời
-              </Button>
-              <Avatar.Group size="small" maxCount={2}>
-                {membersSelectedRoom.map((member) => (
-                  <Tooltip title={member.displayName} key={member.id}>
-                    <Avatar src={member.photoURL}>
-                      {member.photoURL
-                        ? ""
-                        : member.displayName?.charAt(0)?.toUpperCase()}
-                    </Avatar>
-                  </Tooltip>
-                ))}
-              </Avatar.Group>
-            </ButtonGroupStyled>
-          </HeaderStyled>
-          <ContentStyled>
-            <MessageListStyled ref={messageListRef}>
-              {messages.map((mes, index) => {
-                return (
-                  <div key={mes.id}>
-                    {messages[index - 1] !== undefined ? (
-                      !isSameDate(
-                        messages[index - 1].createdAt?.seconds,
-                        mes.createdAt?.seconds
-                      ) ? (
-                        <DividerMessage plain>
-                          {formatDate(mes.createdAt?.seconds, "PPPP")}
-                        </DividerMessage>
-                      ) : null
-                    ) : null}
-                    <Message
-                      key={mes.id}
-                      text={mes.text}
-                      photoURL={mes.photoURL}
-                      displayName={mes.displayName}
-                      createdAt={mes.createdAt}
-                      myMess={uid === mes.uid}
-                    />
-                  </div>
-                );
-              })}
-            </MessageListStyled>
-            <FormStyled form={form}>
-              <Form.Item name="message">
-                <Input
-                  ref={inputRef}
-                  onChange={handleInputChange}
-                  onPressEnter={handleOnSubmit}
-                  placeholder="Nhập tin nhắn..."
-                  bordered={false}
-                  autoComplete="off"
-                />
-              </Form.Item>
-              <Button
-                type="primary"
-                shape="circle"
-                onClick={handleOnSubmit}
-                icon={<SendOutlined />}
-              />
-            </FormStyled>
-          </ContentStyled>
-        </>
-      ) : (
-        <Alert
-          message="Hãy chọn phòng"
-          type="info"
-          showIcon
-          style={{ margin: 5 }}
-          closable
-        />
-      )}
-    </WrapperStyled>
-  );
-}
+//   return (
+//     <WrapperStyled>
+//       {selectedRoom.id ? (
+//         <>
+//           <HeaderStyled>
+//             <div className="header__info">
+//               <p className="header__title">{selectedRoom.name}</p>
+//               <span className="header__description">
+//                 {selectedRoom.description}
+//               </span>
+//             </div>
+//             <ButtonGroupStyled>
+//               <Button
+//                 icon={<EditOutlined />}
+//                 type="text"
+//                 onClick={()=> setIsEditRoomVisible(true)}
+//               >
+//                 Đổi tên phòng
+//               </Button>
+//               <Button
+//                 icon={<LogoutOutlined />}
+//                 type="text"
+//                 onClick={()=> setIsLeaveRoomVisible(true)}
+//               >
+//                 Rời phòng
+//               </Button>
+//               <Button
+//                 icon={<UserAddOutlined />}
+//                 type="text"
+//                 onClick={() => setIsInviteMemberVisible(true)}
+//               >
+//                 Mời
+//               </Button>
+//               <Avatar.Group size="small" maxCount={2}>
+//                 {membersSelectedRoom.map((member) => (
+//                   <Tooltip title={member.displayName} key={member.id}>
+//                     <Avatar src={member.photoURL}>
+//                       {member.photoURL
+//                         ? ""
+//                         : member.displayName?.charAt(0)?.toUpperCase()}
+//                     </Avatar>
+//                   </Tooltip>
+//                 ))}
+//               </Avatar.Group>
+//             </ButtonGroupStyled>
+//           </HeaderStyled>
+//           <ContentStyled>
+//             <MessageListStyled ref={messageListRef}>
+//               {messages.map((mes, index) => {
+//                 return (
+//                   <div key={mes.id}>
+//                     {messages[index - 1] !== undefined ? (
+//                       !isSameDate(
+//                         messages[index - 1].createdAt?.seconds,
+//                         mes.createdAt?.seconds
+//                       ) ? (
+//                         <DividerMessage plain>
+//                           {formatDate(mes.createdAt?.seconds, "PPPP")}
+//                         </DividerMessage>
+//                       ) : null
+//                     ) : null}
+//                     <Message
+//                       key={mes.id}
+//                       text={mes.text}
+//                       photoURL={mes.photoURL}
+//                       displayName={mes.displayName}
+//                       createdAt={mes.createdAt}
+//                       myMess={uid === mes.uid}
+//                     />
+//                   </div>
+//                 );
+//               })}
+//             </MessageListStyled>
+//             <FormStyled form={form}>
+//               <Form.Item name="message">
+//                 <Input
+//                   ref={inputRef}
+//                   onChange={handleInputChange}
+//                   onPressEnter={handleOnSubmit}
+//                   placeholder="Nhập tin nhắn..."
+//                   bordered={false}
+//                   autoComplete="off"
+//                 />
+//               </Form.Item>
+//               <Button
+//                 type="primary"
+//                 shape="circle"
+//                 onClick={handleOnSubmit}
+//                 icon={<SendOutlined />}
+//               />
+//             </FormStyled>
+//           </ContentStyled>
+//         </>
+//       ) : (
+//         <Alert
+//           message="Hãy chọn phòng"
+//           type="info"
+//           showIcon
+//           style={{ margin: 5 }}
+//           closable
+//         />
+//       )}
+//     </WrapperStyled>
+//   );
+// }
 
 const HeaderStyled = styled.div`
   display: flex;
@@ -253,3 +251,219 @@ const DividerMessage = styled(Divider)`
     font-weight: 500;
   }
 `;
+
+export default function ChatWindow() {
+  const {
+    selectedContactId,
+    selectedContact,
+    selectedRoomId,
+    selectedRoom,
+    membersSelectedRoom,
+    setIsInviteMemberVisible,
+    setIsEditRoomVisible,
+    setIsLeaveRoomVisible,
+  } = useContext(AppContext);
+  const {
+    user: { uid, photoURL, displayName },
+  } = useContext(AuthContext);
+  const [inputValue, setInputValue] = useState("");
+  const [form] = Form.useForm();
+  const inputRef = useRef(null);
+  const messageListRef = useRef(null);
+  const isGroupConvesation = selectedRoomId && !selectedContactId;
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleOnSubmit = () => {
+    if (!inputValue) return;
+
+    if (isGroupConvesation) {
+      addDocument("messages", {
+        text: inputValue,
+        uid,
+        photoURL,
+        roomId: selectedRoom.id,
+        displayName,
+      });
+    } else {
+      addDocument("messages", {
+        text: inputValue,
+        uid,
+        photoURL,
+        receiverId: selectedContactId,
+        displayName,
+      });
+    }
+
+    form.resetFields(["message"]);
+    setInputValue("");
+
+    // focus to input again after submit
+    if (inputRef?.current) {
+      setTimeout(() => {
+        inputRef.current.focus();
+      });
+    }
+  };
+
+  const condition = React.useMemo(
+    () => ({
+      fieldName: "roomId",
+      operator: "==",
+      compareValue: selectedRoom.id,
+    }),
+    [selectedRoom.id]
+  );
+
+  const condition1 = React.useMemo(
+    () => ({
+      fieldName: "uid",
+      operator: "==",
+      compareValue: uid,
+    }),
+    [uid]
+  );
+
+  const condition2 = React.useMemo(
+    () => ({
+      fieldName: "receiverId",
+      operator: "==",
+      compareValue: uid,
+    }),
+    [uid]
+  );
+
+  const groupMessages = useFirestore("messages", condition);
+  const contactMessages = [
+    ...useFirestore("messages", condition1).filter(
+      (message) => message.receiverId === selectedContact.uid
+    ),
+    ...useFirestore("messages", condition2).filter(
+      (message) => message.uid === selectedContact.uid
+    ),
+  ].sort((mes1, mes2) => mes1.createdAt - mes2.createdAt);
+  const messages = isGroupConvesation ? groupMessages : contactMessages;
+
+  useEffect(() => {
+    // scroll to bottom after message changed
+    if (messageListRef?.current) {
+      messageListRef.current.scrollTop =
+        messageListRef.current.scrollHeight + 50;
+    }
+  }, [messages]);
+
+  return (
+    <WrapperStyled>
+      {!selectedRoom.id && !selectedContactId ? (
+        <Alert
+          message="Hãy chọn phòng"
+          type="info"
+          showIcon
+          style={{ margin: 5 }}
+          closable
+        />
+      ) : (
+        <>
+          {isGroupConvesation ? (
+            <HeaderStyled>
+              <div className="header__info">
+                <p className="header__title">{selectedRoom.name}</p>
+                <span className="header__description">
+                  {selectedRoom.description}
+                </span>
+              </div>
+              <ButtonGroupStyled>
+                <Button
+                  icon={<EditOutlined />}
+                  type="text"
+                  onClick={() => setIsEditRoomVisible(true)}
+                >
+                  Đổi tên phòng
+                </Button>
+                <Button
+                  icon={<LogoutOutlined />}
+                  type="text"
+                  onClick={() => setIsLeaveRoomVisible(true)}
+                >
+                  Rời phòng
+                </Button>
+                <Button
+                  icon={<UserAddOutlined />}
+                  type="text"
+                  onClick={() => setIsInviteMemberVisible(true)}
+                >
+                  Mời
+                </Button>
+                <Avatar.Group size="small" maxCount={2}>
+                  {membersSelectedRoom.map((member) => (
+                    <Tooltip title={member.displayName} key={member.id}>
+                      <Avatar src={member.photoURL}>
+                        {member.photoURL
+                          ? ""
+                          : member.displayName?.charAt(0)?.toUpperCase()}
+                      </Avatar>
+                    </Tooltip>
+                  ))}
+                </Avatar.Group>
+              </ButtonGroupStyled>
+            </HeaderStyled>
+          ) : (
+            <HeaderStyled>
+              <div className="header__info">
+                <p className="header__title">{selectedContact.displayName}</p>
+              </div>
+            </HeaderStyled>
+          )}
+          <ContentStyled>
+            <MessageListStyled ref={messageListRef}>
+              {messages.map((mes, index) => {
+                return (
+                  <div key={mes.id}>
+                    {messages[index - 1] !== undefined ? (
+                      !isSameDate(
+                        messages[index - 1].createdAt?.seconds,
+                        mes.createdAt?.seconds
+                      ) ? (
+                        <DividerMessage plain>
+                          {formatDate(mes.createdAt?.seconds, "PPPP")}
+                        </DividerMessage>
+                      ) : null
+                    ) : null}
+                    <Message
+                      key={mes.id}
+                      text={mes.text}
+                      photoURL={mes.photoURL}
+                      displayName={mes.displayName}
+                      createdAt={mes.createdAt}
+                      myMess={uid === mes.uid}
+                    />
+                  </div>
+                );
+              })}
+            </MessageListStyled>
+            <FormStyled form={form}>
+              <Form.Item name="message">
+                <Input
+                  ref={inputRef}
+                  onChange={handleInputChange}
+                  onPressEnter={handleOnSubmit}
+                  placeholder="Nhập tin nhắn..."
+                  bordered={false}
+                  autoComplete="off"
+                />
+              </Form.Item>
+              <Button
+                type="primary"
+                shape="circle"
+                onClick={handleOnSubmit}
+                icon={<SendOutlined />}
+              />
+            </FormStyled>
+          </ContentStyled>
+        </>
+      )}
+    </WrapperStyled>
+  );
+}
