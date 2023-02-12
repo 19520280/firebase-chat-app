@@ -1,12 +1,13 @@
-import { UserAddOutlined } from '@ant-design/icons';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import { Button, Tooltip, Avatar, Form, Input, Alert } from 'antd';
-import Message from './Message';
-import { AppContext } from '../../Context/AppProvider';
-import { addDocument } from '../../firebase/services';
-import { AuthContext } from '../../Context/AuthProvider';
-import useFirestore from '../../hooks/useFirestore';
+import { SendOutlined, UserAddOutlined, EditOutlined, LogoutOutlined } from "@ant-design/icons";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import { Button, Tooltip, Avatar, Form, Input, Alert, Divider } from "antd";
+import Message from "./Message";
+import { AppContext } from "../../Context/AppProvider";
+import { addDocument } from "../../firebase/services";
+import { AuthContext } from "../../Context/AuthProvider";
+import useFirestore from "../../hooks/useFirestore";
+import { isSameDate, formatDate } from "../../utils/formatDate";
 
 const HeaderStyled = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ const ContentStyled = styled.div`
   height: calc(100% - 56px);
   display: flex;
   flex-direction: column;
-  padding: 11px;
+  padding: 12px;
   justify-content: flex-end;
 `;
 
@@ -57,25 +58,37 @@ const FormStyled = styled(Form)`
   justify-content: space-between;
   align-items: center;
   padding: 2px 2px 2px 0;
-  border: 1px solid rgb(230, 230, 230);
-  border-radius: 2px;
+  // border: 1px solid rgb(230, 230, 230);
 
   .ant-form-item {
     flex: 1;
-    margin-bottom: 0;
+    margin-right: 8px;
+    margin-bottom: 0px;
+    background-color: #e3e6eb;
+    border-radius: 16px;
   }
 `;
 
 const MessageListStyled = styled.div`
   max-height: 100%;
   overflow-y: auto;
+  padding: 12px 16px 12px 12px;
+`;
+
+const DividerMessage = styled(Divider)`
+  .ant-divider-inner-text {
+    color: #a7a7a7;
+    font-size: 12px;
+    font-weight: 500;
+  }
 `;
 
 export default function ChatWindow() {
   const { 
     selectedContactId, selectedContact, 
     selectedRoomId, selectedRoom, 
-    members, setIsInviteMemberVisible 
+    members, setIsInviteMemberVisible,
+    setIsEditRoomVisible, setIsLeaveRoomVisible 
   } = useContext(AppContext);
   const {
     user: { uid, photoURL, displayName },
@@ -152,7 +165,8 @@ export default function ChatWindow() {
 
   const groupMessages = useFirestore('messages', condition);
   const contactMessages = [...useFirestore('messages', condition1).filter((message) => message.receiverId === selectedContact.uid), 
-                          ...useFirestore('messages', condition2).filter((message) => message.uid === selectedContact.uid)];
+                          ...useFirestore('messages', condition2).filter((message) => message.uid === selectedContact.uid)]
+                          .sort((mes1, mes2) => mes1.createdAt - mes2.createdAt);
   const messages = isGroupConvesation ? groupMessages : contactMessages;
 
   useEffect(() => {
@@ -187,6 +201,20 @@ export default function ChatWindow() {
               </div>
               <ButtonGroupStyled>
                 <Button
+                  icon={<EditOutlined />}
+                  type="text"
+                  onClick={()=> setIsEditRoomVisible(true)}
+                >
+                  Đổi tên phòng
+                </Button>
+                <Button
+                  icon={<LogoutOutlined />}
+                  type="text"
+                  onClick={()=> setIsLeaveRoomVisible(true)}
+                >
+                  Rời phòng
+                </Button>
+                <Button
                   icon={<UserAddOutlined />}
                   type='text'
                   onClick={() => setIsInviteMemberVisible(true)}
@@ -216,15 +244,30 @@ export default function ChatWindow() {
         }
           <ContentStyled>
             <MessageListStyled ref={messageListRef}>
-              {messages.map((mes) => (
-                <Message
-                  key={mes.id}
-                  text={mes.text}
-                  photoURL={mes.photoURL}
-                  displayName={mes.displayName}
-                  createdAt={mes.createdAt}
-                />
-              ))}
+              {messages.map((mes, index) => {
+                return (
+                  <div key={mes.id}>
+                    {messages[index - 1] !== undefined ? (
+                      !isSameDate(
+                        messages[index - 1].createdAt?.seconds,
+                        mes.createdAt?.seconds
+                      ) ? (
+                        <DividerMessage plain>
+                          {formatDate(mes.createdAt?.seconds, "PPPP")}
+                        </DividerMessage>
+                      ) : null
+                    ) : null}
+                    <Message
+                      key={mes.id}
+                      text={mes.text}
+                      photoURL={mes.photoURL}
+                      displayName={mes.displayName}
+                      createdAt={mes.createdAt}
+                      myMess={uid === mes.uid}
+                    />
+                  </div>
+                );
+              })}
             </MessageListStyled>
             <FormStyled form={form}>
               <Form.Item name='message'>
@@ -237,9 +280,12 @@ export default function ChatWindow() {
                   autoComplete='off'
                 />
               </Form.Item>
-              <Button type='primary' onClick={handleOnSubmit}>
-                Gửi
-              </Button>
+              <Button
+                type="primary"
+                shape="circle"
+                onClick={handleOnSubmit}
+                icon={<SendOutlined />}
+              />
             </FormStyled>
           </ContentStyled>
         </>

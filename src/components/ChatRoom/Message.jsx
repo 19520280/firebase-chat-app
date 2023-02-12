@@ -1,53 +1,66 @@
-import { Avatar, Typography } from "antd";
-import { formatRelative } from "date-fns/esm";
+import { Avatar, Space, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";
-
+import { formatDate, formatRelativeDate } from "./../../utils/formatDate";
 const WrapperStyled = styled.div`
-    margin-bottom: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+  display: flex;
+  direction: row;
 
-    .author {
-        margin-left: 5px;
-        font-weight: bold;
-    }
+  .author {
+    color: #a7a7a7;
+    font-size: 12px;
+  }
 
-    .date {
-        margin-left: 10px;
-        font-size: 11px;
-        color: #a7a7a7;
-    }
+  .content {
+    background-color: #e3e6eb;
+    padding: 8px;
+    border-radius: 0px 8px 8px 8px;
+  }
 
-    .content {
-        margin-left: 30px;
-    }
+  .my-content {
+    background-color: #1890ff;
+    color: white;
+    padding: 8px;
+    border-radius: 8px 0px 8px 8px;
+  }
 `;
 
-function formatDate(seconds) {
-    let formattedDate = '';
-
-    if (seconds) {
-        formattedDate = formatRelative(new Date(seconds * 1000), new Date());
-
-        formattedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-    }
-
-    return formattedDate;
-}
-
-export default function Message({ text, displayName, createdAt, photoURL })
-{
+export default function Message({
+  text,
+  displayName,
+  createdAt,
+  photoURL,
+  myMess,
+}) {
+  if (myMess) {
     return (
-        <WrapperStyled>
-            <div>
-                <Avatar size='small' src={photoURL}>
-                    {photoURL ? '' : displayName?.charAt(0)?.toUpperCase()}
-                </Avatar>
-                <Typography.Text className='author'>{displayName}</Typography.Text>
-                <Typography.Text className='date'>{formatDate(createdAt?.seconds)}</Typography.Text>
-            </div>
-            <div>
-                <Typography.Text className='content'>{text}</Typography.Text>
-            </div>
-        </WrapperStyled>
+      <WrapperStyled style={{ justifyContent: "flex-end" }}>
+        <Space direction="vertical" align="end">
+          <Typography.Text className="author">
+            {formatDate(createdAt?.seconds, "p")}
+          </Typography.Text>
+          <Typography.Text className="my-content">{text}</Typography.Text>
+        </Space>
+      </WrapperStyled>
     );
+  }
+  return (
+    <WrapperStyled>
+      <Space align="start">
+        <Avatar size="large" src={photoURL}>
+          {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
+        </Avatar>
+        <Space direction="vertical">
+          <div>
+            <Typography.Text className="author">
+              {displayName}, {formatDate(createdAt?.seconds, "p")}
+            </Typography.Text>
+          </div>
+          <Typography.Text className="content">{text}</Typography.Text>
+        </Space>
+      </Space>
+    </WrapperStyled>
+  );
 }

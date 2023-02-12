@@ -28,10 +28,10 @@ export default function UserInfo() {
   return (
     <WrapperStyled>
       <div>
-        <Avatar src={photoURL}>
+        <Avatar src={photoURL} size='large'>
           {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
         </Avatar>
-        <Typography.Text className="username">{displayName}</Typography.Text>
+        <Typography.Text className="username" style={{marginLeft: 8}}>{displayName}</Typography.Text>
       </div>
       <Button
         shape="circle"
