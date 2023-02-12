@@ -9,16 +9,15 @@ const { Panel } = Collapse;
 
 const PanelStyled = styled(Panel)`
   &&& {
-    .ant-collapse-header,
-    p {
-      color: #050505;
+    .ant-collapse-header {
+      padding: 0;
+    }
+    ,
+    .ant-collapse-header-text {
+      color: #a7a7a7;
+      font-weight: 500;
     }
     .ant-collapse-content-box {
-      padding: 0 40px;
-    }
-    .add-room {
-      color: #050505;
-      padding: 0;
     }
   }
 `;
@@ -114,41 +113,45 @@ export default function RoomList() {
           {user.displayName}
         </LinkStyled>
       ))}
-      {rooms.map((room) => (
-        <LinkStyled
-          key={room.id}
-          onClick={() => {
-            setSelectedContactId("");
-            setSelectedRoomId(room.id);
-          }}
-          style={{
-            background: selectedRoomId == room.id ? "aliceblue" : "white",
-          }}
-          icon={
-            room?.members.length == 1 ? (
-              <Avatar siz="large" style={{ marginRight: 8 }}>
-                {room.name?.charAt(0)?.toUpperCase()}
-              </Avatar>
-            ) : (
-              <AvatarGroup maxCount={1}>
-                {members?.map((member) => {
-                  if (room.members.includes(member.uid)) {
-                    return (
-                      <Avatar src={member.photoURL}>
-                        {member.photoURL
-                          ? ""
-                          : member.displayName?.charAt(0)?.toUpperCase()}
-                      </Avatar>
-                    );
-                  }
-                })}
-              </AvatarGroup>
-            )
-          }
-        >
-          {room.name}
-        </LinkStyled>
-      ))}
+      <Collapse ghost defaultActiveKey={[1]}>
+        <PanelStyled header="Danh Sách Phòng" key={1}>
+          {rooms.map((room) => (
+            <LinkStyled
+              key={room.id}
+              onClick={() => {
+                setSelectedContactId("");
+                setSelectedRoomId(room.id);
+              }}
+              style={{
+                background: selectedRoomId == room.id ? "aliceblue" : "white",
+              }}
+              icon={
+                room?.members.length == 1 ? (
+                  <Avatar size="large" style={{ marginRight: 8 }}>
+                    {room.name?.charAt(0)?.toUpperCase()}
+                  </Avatar>
+                ) : (
+                  <AvatarGroup maxCount={1}>
+                    {members?.map((member) => {
+                      if (room.members.includes(member.uid)) {
+                        return (
+                          <Avatar src={member.photoURL}>
+                            {member.photoURL
+                              ? ""
+                              : member.displayName?.charAt(0)?.toUpperCase()}
+                          </Avatar>
+                        );
+                      }
+                    })}
+                  </AvatarGroup>
+                )
+              }
+            >
+              {room.name}
+            </LinkStyled>
+          ))}
+        </PanelStyled>
+      </Collapse>
     </Space>
   );
 }

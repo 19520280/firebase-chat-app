@@ -17,14 +17,14 @@ export default function UserInfo() {
   return (
     <Space direction="vertical" style={{ width: "100%", padding: "12px 16px" }}>
       <WrapperStyled>
-        <div>
+        <Space direction="horizontal">
           <Avatar src={photoURL} size="large">
             {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
           </Avatar>
           <Typography.Text className="username" style={{ marginLeft: 8 }}>
             {displayName}
           </Typography.Text>
-        </div>
+        </Space>
         <Button
           shape="circle"
           icon={<LogoutOutlined />}
