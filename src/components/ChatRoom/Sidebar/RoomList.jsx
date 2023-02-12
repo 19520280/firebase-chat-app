@@ -22,6 +22,7 @@ export default function RoomList() {
     setIsAddRoomVisible(true);
   };
 
+  console.log(members);
   return (
     <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
       <Button
@@ -42,19 +43,25 @@ export default function RoomList() {
             background: selectedRoomId == room.id ? "aliceblue" : "white",
           }}
           icon={
-            <AvatarGroup maxCount={1}>
-              {members.map((member) => {
-                if (member.uid !== uid) {
-                  return (
-                    <Avatar src={member.photoURL}>
-                      {member.photoURL
-                        ? ""
-                        : member.displayName?.charAt(0)?.toUpperCase()}
-                    </Avatar>
-                  );
-                }
-              })}
-            </AvatarGroup>
+            room?.members.length == 1 ? (
+              <Avatar siz="large" style={{ marginRight: 8 }}>
+                {room.name?.charAt(0)?.toUpperCase()}
+              </Avatar>
+            ) : (
+              <AvatarGroup maxCount={1}>
+                {members?.map((member) => {
+                  if (room.members.includes(member.uid)) {
+                    return (
+                      <Avatar src={member.photoURL}>
+                        {member.photoURL
+                          ? ""
+                          : member.displayName?.charAt(0)?.toUpperCase()}
+                      </Avatar>
+                    );
+                  }
+                })}
+              </AvatarGroup>
+            )
           }
         >
           {room.name}

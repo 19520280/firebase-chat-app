@@ -1,14 +1,14 @@
-import React from 'react';
-import { Row, Col } from 'antd';
-import UserInfo from './UserInfo';
-import RoomList from './RoomList';
-import styled from 'styled-components';
+import React from "react";
+import { Row, Col } from "antd";
+import UserInfo from "./UserInfo";
+import RoomList from "./RoomList";
+import styled from "styled-components";
 
 const SidebarStyled = styled.div`
   background: white;
   color: #050505;
   height: 100vh;
-  border-right: 1px solid #F0F2F5;
+  border-right: 1px solid #f0f2f5;
 `;
 
 export default function Sidebar() {

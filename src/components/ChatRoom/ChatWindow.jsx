@@ -1,4 +1,9 @@
-import { SendOutlined, UserAddOutlined, EditOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  SendOutlined,
+  UserAddOutlined,
+  EditOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Button, Tooltip, Avatar, Form, Input, Alert, Divider } from "antd";
@@ -9,10 +14,14 @@ import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
 import { isSameDate, formatDate } from "../../utils/formatDate";
 
-
 export default function ChatWindow() {
-  const { selectedRoom, members, setIsInviteMemberVisible, setIsEditRoomVisible, setIsLeaveRoomVisible } =
-    useContext(AppContext);
+  const {
+    selectedRoom,
+    membersSelectedRoom,
+    setIsInviteMemberVisible,
+    setIsEditRoomVisible,
+    setIsLeaveRoomVisible,
+  } = useContext(AppContext);
 
   const {
     user: { uid, photoURL, displayName },
@@ -80,14 +89,14 @@ export default function ChatWindow() {
               <Button
                 icon={<EditOutlined />}
                 type="text"
-                onClick={()=> setIsEditRoomVisible(true)}
+                onClick={() => setIsEditRoomVisible(true)}
               >
                 Đổi tên phòng
               </Button>
               <Button
                 icon={<LogoutOutlined />}
                 type="text"
-                onClick={()=> setIsLeaveRoomVisible(true)}
+                onClick={() => setIsLeaveRoomVisible(true)}
               >
                 Rời phòng
               </Button>
@@ -99,7 +108,7 @@ export default function ChatWindow() {
                 Mời
               </Button>
               <Avatar.Group size="small" maxCount={2}>
-                {members.map((member) => (
+                {membersSelectedRoom.map((member) => (
                   <Tooltip title={member.displayName} key={member.id}>
                     <Avatar src={member.photoURL}>
                       {member.photoURL
@@ -170,7 +179,6 @@ export default function ChatWindow() {
     </WrapperStyled>
   );
 }
-
 
 const HeaderStyled = styled.div`
   display: flex;
