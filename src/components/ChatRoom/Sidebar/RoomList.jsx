@@ -55,7 +55,7 @@ const AvatarGroup = styled(Avatar.Group)`
   position: relative;
   width: 48px;
   height: 48px;
-  margin-right: 8px;
+  margin-right: 12px;
 
   .ant-avatar {
     width: calc(100% * (2 / 3));
@@ -184,15 +184,7 @@ export default function RoomList() {
   }
 
   return (
-    <Space direction="vertical" style={{ width: "100%", padding: 12, gap: 0 }}>
-      <Button
-        // type="outlined"
-        icon={<PlusSquareOutlined />}
-        className="add-room"
-        onClick={handleAddRoom}
-      >
-        Thêm phòng
-      </Button>
+    <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
       <DebounceSelect
         label="Danh sách liên hệ"
         uid={uid}
@@ -204,60 +196,73 @@ export default function RoomList() {
         }}
         style={{ width: "100%" }}
       />
-      {rooms
-        .sort(
-          (room1, room2) =>
-            room2.latestInteractionAt - room1.latestInteractionAt
-        )
-        .map((room) => {
-          const other = users.find(
-            (user) => user.uid === room.members.find((member) => member !== uid)
-          );
-          return (
-            <LinkStyled
-              key={room.id}
-              onClick={() => setSelectedRoomId(room.id)}
-              style={{
-                background: selectedRoomId == room.id ? "aliceblue" : "white",
-              }}
-              icon={
-                room.isPrivateRoom ? (
-                  <Avatar size="large" src={other.photoURL}>
-                    {other.photoURL
-                      ? ""
-                      : other.displayName?.charAt(0)?.toUpperCase()}
-                  </Avatar>
-                ) : (
-                  () => {
-                    room?.members.length == 1 ? (
-                      <Avatar size="large" style={{ marginRight: 8 }}>
-                        {room.name?.charAt(0)?.toUpperCase()}
-                      </Avatar>
-                    ) : (
-                      <AvatarGroup maxCount={1}>
-                        {members?.map((member) => {
-                          if (room.members.includes(member.uid)) {
-                            return (
-                              <Avatar src={member.photoURL}>
-                                {member.photoURL
-                                  ? ""
-                                  : member.displayName
-                                      ?.charAt(0)
-                                      ?.toUpperCase()}
-                              </Avatar>
-                            );
-                          }
-                        })}
-                      </AvatarGroup>
-                    );
-                  }
-                )
-              }
-            >
-              {room.isPrivateRoom ? other.displayName : room.name}
-            </LinkStyled>
-          );
-        })}
+      <div
+        style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+      >
+        <Button
+          // type="outlined"
+          icon={<PlusSquareOutlined />}
+          className="add-room"
+          onClick={handleAddRoom}
+        >
+          Thêm phòng
+        </Button>
+      </div>
+      <div>
+        {rooms
+          .sort(
+            (room1, room2) =>
+              room2.latestInteractionAt - room1.latestInteractionAt
+          )
+          .map((room) => {
+            const other = users.find(
+              (user) =>
+                user.uid === room.members.find((member) => member !== uid)
+            );
+            return (
+              <LinkStyled
+                key={room.id}
+                onClick={() => setSelectedRoomId(room.id)}
+                style={{
+                  background: selectedRoomId == room.id ? "aliceblue" : "white",
+                }}
+                icon={
+                  room.isPrivateRoom ? (
+                    <Avatar
+                      size="large"
+                      src={other.photoURL}
+                      style={{ marginRight: 12 }}
+                    >
+                      {other.photoURL
+                        ? ""
+                        : other.displayName?.charAt(0)?.toUpperCase()}
+                    </Avatar>
+                  ) : room?.members.length == 1 ? (
+                    <Avatar size="large" style={{ marginRight: 12 }}>
+                      {room.name?.charAt(0)?.toUpperCase()}
+                    </Avatar>
+                  ) : (
+                    <AvatarGroup maxCount={1}>
+                      {members?.map((member) => {
+                        if (room.members.includes(member.uid)) {
+                          return (
+                            <Avatar src={member.photoURL}>
+                              {member.photoURL
+                                ? ""
+                                : member.displayName?.charAt(0)?.toUpperCase()}
+                            </Avatar>
+                          );
+                        }
+                      })}
+                    </AvatarGroup>
+                  )
+                }
+              >
+                {room.isPrivateRoom ? other.displayName : room.name}
+              </LinkStyled>
+            );
+          })}
+      </div>
     </Space>
   );
 }
