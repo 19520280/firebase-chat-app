@@ -1,19 +1,17 @@
 import {
-  SendOutlined,
-  UserAddOutlined,
   EditOutlined,
   LogoutOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
+import { Alert, Avatar, Button, Divider, Form, Tooltip } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Button, Tooltip, Avatar, Form, Input, Alert, Divider } from "antd";
-import Message from "./Message";
 import { AppContext } from "../../Context/AppProvider";
-import { addDocument, updateDocument } from "../../firebase/services";
 import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
-import { isSameDate, formatDate } from "../../utils/formatDate";
-import firebase from "../../firebase/config";
+import { formatDate, isSameDate } from "../../utils/formatDate";
+import InputMessage from "./InputMessage";
+import Message from "./Message";
 
 // export default function ChatWindow() {
 //   const {  selectedContactId, selectedContact,
@@ -223,22 +221,6 @@ const ContentStyled = styled.div`
   justify-content: flex-end;
 `;
 
-const FormStyled = styled(Form)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2px 2px 2px 0;
-  // border: 1px solid rgb(230, 230, 230);
-
-  .ant-form-item {
-    flex: 1;
-    margin-right: 8px;
-    margin-bottom: 0px;
-    background-color: #e3e6eb;
-    border-radius: 16px;
-  }
-`;
-
 const MessageListStyled = styled.div`
   max-height: 100%;
   overflow-y: auto;
@@ -255,50 +237,24 @@ const DividerMessage = styled(Divider)`
 
 export default function ChatWindow() {
   const {
-    selectedRoomId, selectedRoom, 
-    users, members, setIsInviteMemberVisible,
-    setIsEditRoomVisible, setIsLeaveRoomVisible 
+    selectedRoomId,
+    selectedRoom,
+    users,
+    members,
+    setIsInviteMemberVisible,
+    setIsEditRoomVisible,
+    setIsLeaveRoomVisible,
   } = useContext(AppContext);
   const {
     user: { uid, photoURL, displayName },
   } = useContext(AuthContext);
-  
-  const [img, setImg] = useState(null);
-  const [inputValue, setInputValue] = useState("");
-  const [form] = Form.useForm();
-  const inputRef = useRef(null);
+
   const messageListRef = useRef(null);
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleOnSubmit = () => {
-    if (!inputValue) return;
-
-    addDocument('messages', {
-      text: inputValue,
-      uid,
-      photoURL,
-      roomId: selectedRoom.id,
-      displayName,
-    });
-    updateDocument('rooms', { 
-      latestInteractionAt: firebase.firestore.FieldValue.serverTimestamp(),
-    }, selectedRoom.id);
-
-    form.resetFields(["message"]);
-    setInputValue("");
-
-    // focus to input again after submit
-    if (inputRef?.current) {
-      setTimeout(() => {
-        inputRef.current.focus();
-      });
-    }
-  };
-
-  const other = users.find((user) => user.uid === selectedRoom?.members?.find((member) => member !== uid));
+  const other = users.find(
+    (user) =>
+      user.uid === selectedRoom?.members?.find((member) => member !== uid)
+  );
 
   const condition = React.useMemo(
     () => ({
@@ -309,7 +265,7 @@ export default function ChatWindow() {
     [selectedRoom.id]
   );
 
-  const messages = useFirestore('messages', condition);
+  const messages = useFirestore("messages", condition);
 
   useEffect(() => {
     // scroll to bottom after message changed
@@ -321,7 +277,7 @@ export default function ChatWindow() {
 
   return (
     <WrapperStyled>
-      {(!selectedRoom.id) ? (
+      {!selectedRoom.id ? (
         <Alert
           message="Hãy chọn phòng"
           type="info"
@@ -331,11 +287,10 @@ export default function ChatWindow() {
         />
       ) : (
         <>
-        {
-          selectedRoom.isPrivateRoom ? (
+          {selectedRoom.isPrivateRoom ? (
             <HeaderStyled>
-              <div className='header__info'>
-                <p className='header__title'>{other.displayName}</p>
+              <div className="header__info">
+                <p className="header__title">{other.displayName}</p>
               </div>
             </HeaderStyled>
           ) : (
@@ -381,7 +336,6 @@ export default function ChatWindow() {
                 </Avatar.Group>
               </ButtonGroupStyled>
             </HeaderStyled>
-
           )}
           <ContentStyled>
             <MessageListStyled ref={messageListRef}>
@@ -409,30 +363,7 @@ export default function ChatWindow() {
                 );
               })}
             </MessageListStyled>
-            <FormStyled form={form}>
-              <Form.Item name="message">
-                <Input
-                  ref={inputRef}
-                  onChange={handleInputChange}
-                  onPressEnter={handleOnSubmit}
-                  placeholder="Nhập tin nhắn..."
-                  bordered={false}
-                  autoComplete="off"
-                />
-              </Form.Item>
-              <input
-                type="file"
-                style={{ display: "none" }}
-                id="file"
-                onChange={(e) => setImg(e.target.files[0])}
-              />
-              <Button
-                type="primary"
-                shape="circle"
-                onClick={handleOnSubmit}
-                icon={<SendOutlined />}
-              />
-            </FormStyled>
+            <InputMessage />
           </ContentStyled>
         </>
       )}
