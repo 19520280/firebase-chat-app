@@ -9,10 +9,11 @@ import styled from "styled-components";
 import { Button, Tooltip, Avatar, Form, Input, Alert, Divider } from "antd";
 import Message from "./Message";
 import { AppContext } from "../../Context/AppProvider";
-import { addDocument } from "../../firebase/services";
+import { addDocument, updateDocument } from "../../firebase/services";
 import { AuthContext } from "../../Context/AuthProvider";
 import useFirestore from "../../hooks/useFirestore";
 import { isSameDate, formatDate } from "../../utils/formatDate";
+import firebase from "../../firebase/config";
 
 // export default function ChatWindow() {
 //   const {  selectedContactId, selectedContact,
@@ -254,14 +255,9 @@ const DividerMessage = styled(Divider)`
 
 export default function ChatWindow() {
   const {
-    selectedContactId,
-    selectedContact,
-    selectedRoomId,
-    selectedRoom,
-    membersSelectedRoom,
-    setIsInviteMemberVisible,
-    setIsEditRoomVisible,
-    setIsLeaveRoomVisible,
+    selectedRoomId, selectedRoom, 
+    users, members, setIsInviteMemberVisible,
+    setIsEditRoomVisible, setIsLeaveRoomVisible 
   } = useContext(AppContext);
   const {
     user: { uid, photoURL, displayName },
@@ -270,7 +266,6 @@ export default function ChatWindow() {
   const [form] = Form.useForm();
   const inputRef = useRef(null);
   const messageListRef = useRef(null);
-  const isGroupConvesation = selectedRoomId && !selectedContactId;
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -279,23 +274,16 @@ export default function ChatWindow() {
   const handleOnSubmit = () => {
     if (!inputValue) return;
 
-    if (isGroupConvesation) {
-      addDocument("messages", {
-        text: inputValue,
-        uid,
-        photoURL,
-        roomId: selectedRoom.id,
-        displayName,
-      });
-    } else {
-      addDocument("messages", {
-        text: inputValue,
-        uid,
-        photoURL,
-        receiverId: selectedContactId,
-        displayName,
-      });
-    }
+    addDocument('messages', {
+      text: inputValue,
+      uid,
+      photoURL,
+      roomId: selectedRoom.id,
+      displayName,
+    });
+    updateDocument('rooms', { 
+      latestInteractionAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }, selectedRoom.id);
 
     form.resetFields(["message"]);
     setInputValue("");
@@ -308,6 +296,8 @@ export default function ChatWindow() {
     }
   };
 
+  const other = users.find((user) => user.uid === selectedRoom?.members?.find((member) => member !== uid));
+
   const condition = React.useMemo(
     () => ({
       fieldName: "roomId",
@@ -317,34 +307,7 @@ export default function ChatWindow() {
     [selectedRoom.id]
   );
 
-  const condition1 = React.useMemo(
-    () => ({
-      fieldName: "uid",
-      operator: "==",
-      compareValue: uid,
-    }),
-    [uid]
-  );
-
-  const condition2 = React.useMemo(
-    () => ({
-      fieldName: "receiverId",
-      operator: "==",
-      compareValue: uid,
-    }),
-    [uid]
-  );
-
-  const groupMessages = useFirestore("messages", condition);
-  const contactMessages = [
-    ...useFirestore("messages", condition1).filter(
-      (message) => message.receiverId === selectedContact.uid
-    ),
-    ...useFirestore("messages", condition2).filter(
-      (message) => message.uid === selectedContact.uid
-    ),
-  ].sort((mes1, mes2) => mes1.createdAt - mes2.createdAt);
-  const messages = isGroupConvesation ? groupMessages : contactMessages;
+  const messages = useFirestore('messages', condition);
 
   useEffect(() => {
     // scroll to bottom after message changed
@@ -356,7 +319,7 @@ export default function ChatWindow() {
 
   return (
     <WrapperStyled>
-      {!selectedRoom.id && !selectedContactId ? (
+      {(!selectedRoom.id) ? (
         <Alert
           message="Hãy chọn phòng"
           type="info"
@@ -366,7 +329,14 @@ export default function ChatWindow() {
         />
       ) : (
         <>
-          {isGroupConvesation ? (
+        {
+          selectedRoom.isPrivateRoom ? (
+            <HeaderStyled>
+              <div className='header__info'>
+                <p className='header__title'>{other.displayName}</p>
+              </div>
+            </HeaderStyled>
+          ) : (
             <HeaderStyled>
               <div className="header__info">
                 <p className="header__title">{selectedRoom.name}</p>
@@ -397,7 +367,7 @@ export default function ChatWindow() {
                   Mời
                 </Button>
                 <Avatar.Group size="small" maxCount={2}>
-                  {membersSelectedRoom.map((member) => (
+                  {members.map((member) => (
                     <Tooltip title={member.displayName} key={member.id}>
                       <Avatar src={member.photoURL}>
                         {member.photoURL
@@ -409,12 +379,7 @@ export default function ChatWindow() {
                 </Avatar.Group>
               </ButtonGroupStyled>
             </HeaderStyled>
-          ) : (
-            <HeaderStyled>
-              <div className="header__info">
-                <p className="header__title">{selectedContact.displayName}</p>
-              </div>
-            </HeaderStyled>
+
           )}
           <ContentStyled>
             <MessageListStyled ref={messageListRef}>
