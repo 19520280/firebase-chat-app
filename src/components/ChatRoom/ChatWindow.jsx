@@ -266,6 +266,8 @@ export default function ChatWindow() {
   const {
     user: { uid, photoURL, displayName },
   } = useContext(AuthContext);
+  
+  const [img, setImg] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [form] = Form.useForm();
   const inputRef = useRef(null);
@@ -421,15 +423,14 @@ export default function ChatWindow() {
               {messages.map((mes, index) => {
                 return (
                   <div key={mes.id}>
-                    {messages[index - 1] !== undefined ? (
-                      !isSameDate(
-                        messages[index - 1].createdAt?.seconds,
-                        mes.createdAt?.seconds
-                      ) ? (
-                        <DividerMessage plain>
-                          {formatDate(mes.createdAt?.seconds, "PPPP")}
-                        </DividerMessage>
-                      ) : null
+                    {messages[index - 1] == undefined ||
+                    !isSameDate(
+                      messages[index - 1].createdAt?.seconds,
+                      mes.createdAt?.seconds
+                    ) ? (
+                      <DividerMessage plain>
+                        {formatDate(mes.createdAt?.seconds, "PPPP")}
+                      </DividerMessage>
                     ) : null}
                     <Message
                       key={mes.id}
@@ -454,6 +455,12 @@ export default function ChatWindow() {
                   autoComplete="off"
                 />
               </Form.Item>
+              <input
+                type="file"
+                style={{ display: "none" }}
+                id="file"
+                onChange={(e) => setImg(e.target.files[0])}
+              />
               <Button
                 type="primary"
                 shape="circle"
