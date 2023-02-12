@@ -3,6 +3,7 @@ import { Form, Modal, Input } from "antd";
 import { AppContext } from "../../Context/AppProvider";
 import { addDocument } from "../../firebase/services";
 import { AuthContext } from "../../Context/AuthProvider";
+import firebase from "../../firebase/config";
 
 export default function AddRoomModal() {
   const { isAddRoomVisible, setIsAddRoomVisible } = useContext(AppContext);
@@ -16,6 +17,8 @@ export default function AddRoomModal() {
     // add new room to firestore
     addDocument("rooms", {
       ...form.getFieldsValue(),
+      isPrivateRoom: false,
+      latestInteractionAt: firebase.firestore.FieldValue.serverTimestamp(),
       members: [uid]
     });
 
