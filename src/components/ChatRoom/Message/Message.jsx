@@ -25,6 +25,7 @@ const WrapperStyled = styled.div`
     width: 100%;
     flex-direction: column;
     gap: 4px;
+    align-items: flex-start;
 
     &.owner {
       align-items: flex-end;
