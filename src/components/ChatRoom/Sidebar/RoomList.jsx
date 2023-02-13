@@ -192,7 +192,7 @@ export default function RoomList() {
           .filter((opt) => opt.value != uid);
       });
   }
-
+  console.log(rooms);
   return (
     <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
       <DebounceSelect
@@ -242,12 +242,12 @@ export default function RoomList() {
                   room.isPrivateRoom ? (
                     <Avatar
                       size="large"
-                      src={other.photoURL}
+                      src={other?.photoURL}
                       style={{ marginRight: 12 }}
                     >
-                      {other.photoURL
+                      {other?.photoURL
                         ? ""
-                        : other.displayName?.charAt(0)?.toUpperCase()}
+                        : other?.displayName?.charAt(0)?.toUpperCase()}
                     </Avatar>
                   ) : room?.members.length == 1 ? (
                     <Avatar size="large" style={{ marginRight: 12 }}>
@@ -258,8 +258,8 @@ export default function RoomList() {
                       {members?.map((member) => {
                         if (room.members.includes(member.uid)) {
                           return (
-                            <Avatar src={member.photoURL} key={member.uid}>
-                              {member.photoURL
+                            <Avatar src={member?.photoURL} key={member.uid}>
+                              {member?.photoURL
                                 ? ""
                                 : member.displayName?.charAt(0)?.toUpperCase()}
                             </Avatar>
@@ -270,7 +270,7 @@ export default function RoomList() {
                   )
                 }
               >
-                {room.isPrivateRoom ? other.displayName : room.name}
+                {room.isPrivateRoom ? other?.displayName : room.name}
               </LinkStyled>
             );
           })}
