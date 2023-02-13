@@ -154,9 +154,9 @@ export default function RoomList() {
   const handleSelectPrivateRoom = (contactId) => {
     let searchedRoom = rooms.find(
       (room) =>
+        room.isPrivateRoom &&
         room.members.includes(uid) &&
-        room.members.includes(contactId) &&
-        room.members.length === 2
+        room.members.includes(contactId)
     );
     if (!searchedRoom) {
       addDocument("rooms", {
@@ -168,9 +168,9 @@ export default function RoomList() {
 
     searchedRoom = rooms.find(
       (room) =>
+        room.isPrivateRoom &&
         room.members.includes(uid) &&
-        room.members.includes(contactId) &&
-        room.members.length === 2
+        room.members.includes(contactId)
     );
     setSelectedRoomId(searchedRoom.id);
   };
@@ -178,7 +178,7 @@ export default function RoomList() {
   async function fetchUserList(search, uid) {
     return db
       .collection("users")
-      .where("keywords", "array-contains", search)
+      .where("keywords", "array-contains", search.toLowerCase())
       .orderBy("displayName")
       .limit(20)
       .get()

@@ -33,12 +33,14 @@ const WrapperStyled = styled.div`
 
     .content {
       background-color: #e3e6eb;
+      max-width: 50%;
       padding: 8px;
       border-radius: 0px 8px 8px 8px;
     }
 
     .my-content {
       background-color: #1890ff;
+      max-width: 50%;
       color: white;
       padding: 8px;
       border-radius: 8px 0px 8px 8px;
