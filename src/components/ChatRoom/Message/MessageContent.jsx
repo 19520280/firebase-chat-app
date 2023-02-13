@@ -36,7 +36,7 @@ const MessageContent = ({ text, imgURL, isOwner }) => {
         <div
           style={{
             display: "flex",
-            direction: "column",
+            flexDirection: "column",
             alignItems: isOwner ? "flex-end" : "flex-start",
           }}
         >
