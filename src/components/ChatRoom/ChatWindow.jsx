@@ -240,7 +240,7 @@ export default function ChatWindow() {
     selectedRoomId,
     selectedRoom,
     users,
-    members,
+    membersSelectedRoom,
     setIsInviteMemberVisible,
     setIsEditRoomVisible,
     setIsLeaveRoomVisible,
@@ -324,7 +324,7 @@ export default function ChatWindow() {
                   Mời
                 </Button>
                 <Avatar.Group size="small" maxCount={2}>
-                  {members.map((member) => (
+                  {membersSelectedRoom.map((member) => (
                     <Tooltip title={member.displayName} key={member.id}>
                       <Avatar src={member.photoURL}>
                         {member.photoURL

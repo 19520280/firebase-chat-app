@@ -115,12 +115,13 @@ const InputMessage = () => {
 
       uploadTask.on(
         (error) => {
+          console.log(error.message);
           //TODO:Handle Error
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             console.log("downloadURL", downloadURL);
-            addDocument("messages", {
+            await addDocument("messages", {
               text: inputValue,
               imgURL: downloadURL,
               uid,
