@@ -34,6 +34,16 @@ const PanelStyled = styled(Panel)`
   }
 `;
 
+const SelectOption = styled(Select)`
+  width: 100%;
+  color: black;
+
+  .ant-select-selector {
+    background-color: #e3e6eb !important;
+    border: none;
+    border-radius: 16px;
+  }
+`;
 const LinkStyled = styled(Button)`
   display: flex;
   align-items: center;
@@ -102,7 +112,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 100, ...props }) {
   }, [debounceTimeout, fetchOptions]);
 
   return (
-    <Select
+    <SelectOption
       labelInValue
       showSearch
       filterOption={false}
@@ -118,7 +128,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 100, ...props }) {
           {`${opt.label}`}
         </Select.Option>
       ))}
-    </Select>
+    </SelectOption>
   );
 }
 
@@ -186,7 +196,7 @@ export default function RoomList() {
   return (
     <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
       <DebounceSelect
-        label="Danh sách liên hệ"
+        // label="Danh sách liên hệ"
         uid={uid}
         value={selectedContactId}
         placeholder="Nhập tên người trò chuyện"
@@ -194,7 +204,9 @@ export default function RoomList() {
         onChange={(newValue) => {
           handleSelectPrivateRoom(newValue.value);
         }}
-        style={{ width: "100%" }}
+        // style={{
+        //   width: "100%",
+        // }}
       />
       <div
         style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
@@ -246,7 +258,7 @@ export default function RoomList() {
                       {members?.map((member) => {
                         if (room.members.includes(member.uid)) {
                           return (
-                            <Avatar src={member.photoURL}>
+                            <Avatar src={member.photoURL} key={member.uid}>
                               {member.photoURL
                                 ? ""
                                 : member.displayName?.charAt(0)?.toUpperCase()}
